@@ -1,122 +1,87 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
-#include <cmath>
-#include <iomanip>
-
-using namespace std;
+#include "function.h"
 
 // Функция для вычисления среднего значения
-double avarage(const vector<double>& data)
-{
-	double sum = 0.0;
-	for (double u : data)
-	{
-		sum += u;
-	}
-	return sum / data.size();
-}
-
-vector<double> standartDeviation(vector<double>& randDevAr)
-{
-	vector<double> standAr;
-	for (int i = 0; i < randDevAr.size(); i++)
-	{
-		double t = randDevAr[i];
-		standAr.push_back(t * t);
-	}
-	return standAr;
-}
-
-vector<double> randomDeviation(const vector<double>& data, double avarage)
-{
-	vector<double> randDevAr;
-	for (int i = 0; i < data.size(); i++)
-	{
-		randDevAr.push_back(data[i] - avarage);
-	}
-
-	return randDevAr;
-}
 
 int main()
 {
 	setlocale(LC_ALL, "Ru");
 
-	ifstream file("Точные.csv");
-	string line;
-	vector<double> values;
+	std::vector<double> values;
 
-	if (!file.is_open())
+	if (readDataFromFile("Accurate.txt", values) == 1)
 	{
-		cerr << "Ошибка открытия файла!" << endl;
 		return 1;
 	}
 
-	// Чтение данных из CSV
-	while (getline(file, line))
-	{
-		if (line.empty())
-		{
-			continue;  // Пропускаем пустые строки
-		}
 
-		values.push_back(stod(line));
-	}
-
-	// Закрываем файл после чтения
-	file.close();
 
 	// Вычисление среднего значения
-	double mean = avarage(values);
-	cout << "Среднее значение: " << mean << endl;
+	double avar = avarage(values);
+	std::cout << "Среднее значение: " << avar << std::endl;
 
 	// Вычисление отклонений от среднего для каждого значения
-	cout << "Отклонения от среднего: " << endl;
+	std::cout << "Отклонения от среднего: " << std::endl;
 
-	vector<double> ar1 = randomDeviation(values, mean);
-
-	for (int i = 0; i < ar1.size(); i++)
+	std::vector<double> devFromTheAver = randomDeviation(values, avar);
+	for (int i = 0; i < devFromTheAver.size(); i++)
 	{
-		cout << ar1[i] << "\n";
+		std::cout << devFromTheAver[i] << "\n";
 	}
-	cout << endl;
+	std::cout << std::endl;
 
-	double sum1 = 0;
-	for (int i = 0; i < ar1.size(); i++)
+	double sumDevFromTheAver = 0;
+	for (int i = 0; i < devFromTheAver.size(); i++)
 	{
-		sum1 += abs(ar1[i]);
+		sumDevFromTheAver += abs(devFromTheAver[i]);
 	}
-	cout << "Сумма случайных отклонений от среднего: " << sum1 << endl;
+	std::cout << "Сумма случайных отклонений от среднего: " << sumDevFromTheAver << std::endl;
 	// Вычисление стандартного отклонения
 
-	cout << "Стандартное отклонение: " << endl;
+	std::cout << "Стандартное отклонение: " << std::endl;
 
-	vector<double> ar2 = standartDeviation(ar1);
-	for (int i = 0; i < ar2.size(); i++)
+	std::vector<double> arrayStDev = standartDeviation(devFromTheAver);
+	for (int i = 0; i < arrayStDev.size(); i++)
 	{
-		cout << i + 1 << ". " << ar2[i] << "\n";
+		std::cout << i + 1 << ". " << arrayStDev[i] << "\n";
 	}
-	cout << endl;
+	std::cout << std::endl;
 
-	double sum2 = 0;
-	for (int i = 0; i < ar1.size(); i++)
+	double sumStDev = 0;
+	for (int i = 0; i < devFromTheAver.size(); i++)
 	{
-		sum2 += abs(ar2[i]);
+		sumStDev += abs(arrayStDev[i]);
 	}
 
-	cout << "Сумма стандартных отклонений от среднего: " << sum2 << endl;
+	std::cout << "Сумма стандартных отклонений от среднего: " << sumStDev << std::endl;
 
-	double sigma = sqrt(sum2 / double(values.size() - 1));
-	cout << "Среднеквадратичное отклонение: " << sigma << endl;
+	double sigma = sqrt(sumStDev / double(values.size() - 1));
+	std::cout << "Среднеквадратичное отклонение: " << sigma << std::endl;
 
 	double deltaU = sigma / sqrt(values.size());
-	cout << "Средняя квадратичная погрешность среднего: " << deltaU << endl;
+	std::cout << "Средняя квадратичная погрешность среднего: " << deltaU << std::endl;
 
-	cout << "Погрешность: " << mean << " +- " << deltaU << endl;
+	std::cout << "Погрешность: " << avar << " +- " << deltaU << std::endl;
 
+
+	std::ofstream file;
+	file.open("Result.txt");
+	if (file.is_open())
+	{
+
+		for (int i = 0; i < devFromTheAver.size(); i++)
+		{
+			file << i + 1 << " & ";
+			file << std::fixed << std::setprecision(4) <<  devFromTheAver[i] << " & ";
+			file << std::fixed << std::setprecision(12) << arrayStDev[i] << " \\" << "\\" << std::endl;
+		}
+
+		file << "Это строка текста для записи в файл." << std::endl;
+		file << 123 << std::endl;
+		file << 3.14159 << std::endl;
+
+
+		file.close(); // Закрываем файл
+	}
 
 	return 0;
 }
