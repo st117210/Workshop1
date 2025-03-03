@@ -4,7 +4,7 @@ int main()
 {
 	std::vector<double> values;
 
-	if (readDataFromFile("Accurate.txt", values) == 1)
+	if (readDataFromFile("Accurate.csv", values) == 1)
 	{
 		return 1;
 	}
@@ -23,7 +23,7 @@ int main()
 	{
 		file << "\\begin{tabular}{|c|c|c|}" << std::endl;
 		file << "\\hline" << std::endl;
-		file << "\\textnumero & $d_i = U_i - \overline{U}$ & $d_i^2 = (U_i - \overline{U})^2$" << " \\" << "\\" << std::endl;
+		file << "\\textnumero & d_i & d_i^2" << " \\" << "\\" << std::endl;
 		file << "\\hline" << std::endl;
 		for (int i = 0; i < n; i++)
 		{
