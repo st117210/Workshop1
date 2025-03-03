@@ -28,7 +28,7 @@ int main()
 		for (int i = 0; i < n; i++)
 		{
 			file << i + 1 << " & ";
-			file << std::fixed << std::setprecision(4) << devFromTheAver[i] << " & ";
+			file << std::fixed << std::setprecision(6) << devFromTheAver[i] << " & ";
 			file << std::fixed << std::setprecision(12) << arrayStDev[i] << " \\" << "\\" << std::endl;
 		}
 		file << "\\hline" << std::endl;
