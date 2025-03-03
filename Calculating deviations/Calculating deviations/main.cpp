@@ -1,11 +1,7 @@
 #include "function.h"
 
-// Функция для вычисления среднего значения
-
 int main()
 {
-	setlocale(LC_ALL, "Ru");
-
 	std::vector<double> values;
 
 	if (readDataFromFile("Accurate.txt", values) == 1)
@@ -13,74 +9,46 @@ int main()
 		return 1;
 	}
 
-
-
-	// Вычисление среднего значения
+	int n = values.size();
 	double avar = avarage(values);
-	std::cout << "Среднее значение: " << avar << std::endl;
-
-	// Вычисление отклонений от среднего для каждого значения
-	std::cout << "Отклонения от среднего: " << std::endl;
-
 	std::vector<double> devFromTheAver = randomDeviation(values, avar);
-	for (int i = 0; i < devFromTheAver.size(); i++)
-	{
-		std::cout << devFromTheAver[i] << "\n";
-	}
-	std::cout << std::endl;
-
-	double sumDevFromTheAver = 0;
-	for (int i = 0; i < devFromTheAver.size(); i++)
-	{
-		sumDevFromTheAver += abs(devFromTheAver[i]);
-	}
-	std::cout << "Сумма случайных отклонений от среднего: " << sumDevFromTheAver << std::endl;
-	// Вычисление стандартного отклонения
-
-	std::cout << "Стандартное отклонение: " << std::endl;
-
 	std::vector<double> arrayStDev = standartDeviation(devFromTheAver);
-	for (int i = 0; i < arrayStDev.size(); i++)
-	{
-		std::cout << i + 1 << ". " << arrayStDev[i] << "\n";
-	}
-	std::cout << std::endl;
-
-	double sumStDev = 0;
-	for (int i = 0; i < devFromTheAver.size(); i++)
-	{
-		sumStDev += abs(arrayStDev[i]);
-	}
-
-	std::cout << "Сумма стандартных отклонений от среднего: " << sumStDev << std::endl;
-
-	double sigma = sqrt(sumStDev / double(values.size() - 1));
-	std::cout << "Среднеквадратичное отклонение: " << sigma << std::endl;
-
-	double deltaU = sigma / sqrt(values.size());
-	std::cout << "Средняя квадратичная погрешность среднего: " << deltaU << std::endl;
-
-	std::cout << "Погрешность: " << avar << " +- " << deltaU << std::endl;
-
+	double sumStanDev = sumStDev(arrayStDev);
+	double sigm = sigma(sumStanDev, double(n));
+	double deltU = deltaU(sigm, double(n));
 
 	std::ofstream file;
-	file.open("Result.txt");
+	file.open("Result.tex");
 	if (file.is_open())
 	{
-
-		for (int i = 0; i < devFromTheAver.size(); i++)
+		file << "\\begin{tabular}{|c|c|c|}" << std::endl;
+		file << "\\hline" << std::endl;
+		file << "\\textnumero & $d_i = U_i - \overline{U}$ & $d_i^2 = (U_i - \overline{U})^2$" << " \\" << "\\" << std::endl;
+		file << "\\hline" << std::endl;
+		for (int i = 0; i < n; i++)
 		{
 			file << i + 1 << " & ";
-			file << std::fixed << std::setprecision(4) <<  devFromTheAver[i] << " & ";
+			file << std::fixed << std::setprecision(4) << devFromTheAver[i] << " & ";
 			file << std::fixed << std::setprecision(12) << arrayStDev[i] << " \\" << "\\" << std::endl;
 		}
+		file << "\\hline" << std::endl;
+		file << "\\end{tabular}" << std::endl;
+		file << std::endl;
 
-		file << "Это строка текста для записи в файл." << std::endl;
-		file << 123 << std::endl;
-		file << 3.14159 << std::endl;
+		file << "\\begin{tabular}{|c|c|}" << std::endl;
+		file << "\\hline" << std::endl;
+		file << "Values  & Calculation results" << " \\" << "\\" << std::endl;
+		file << "\\hline" << std::endl;
+		file << "\\overline{U} & " << std::fixed << std::setprecision(6) << avar << " \\" << "\\" << std::endl;
+		file << "$\\sum_{i=1}^{50} |d_i|$ & " << sumDevAv(devFromTheAver) << " \\" << "\\" << std::endl;
+		file << "$\\sum_{i=1}^{50} d_i^2$ & " << sumStanDev << " \\" << "\\" << std::endl;
+		file << "\\sigma & " << sigm << " \\" << "\\" << std::endl;
+		file << "\\Delta U & " << deltU << " \\" << "\\" << std::endl;
+		file << "U & " << avar << " $\\pm$ " << deltU << " \\" << "\\" << std::endl;
+		file << "\\hline" << std::endl;
+		file << "\\end{tabular}" << std::endl;
 
-
-		file.close(); // Закрываем файл
+		file.close();
 	}
 
 	return 0;

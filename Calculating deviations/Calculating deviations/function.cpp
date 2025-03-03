@@ -32,6 +32,36 @@ std::vector<double> standartDeviation(std::vector<double>& randDevAr)
 	return standAr;
 }
 
+double sumDevAv(const std::vector<double>& devFromTheAver)
+{
+	double sum = 0;
+	for (int i = 0; i < devFromTheAver.size(); i++)
+	{
+		sum += abs(devFromTheAver[i]);
+	}
+	return sum;
+}
+
+double sumStDev(const std::vector<double>& arrayStDev)
+{ 
+	double sum = 0;
+	for (int i = 0; i < arrayStDev.size(); i++)
+	{
+		sum += arrayStDev[i];
+	}
+	return sum;
+}
+
+double sigma(double sumStanDev, double n)
+{
+	return sqrt(sumStanDev / double(n - 1));
+}
+
+double deltaU(double sigma, double n)
+{
+	return (sigma / sqrt(n));
+}
+
 int readDataFromFile(const std::string& filename, std::vector<double>& values)
 {
 	std::ifstream file(filename);
