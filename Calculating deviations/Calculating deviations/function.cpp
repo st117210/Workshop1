@@ -68,7 +68,7 @@ int readDataFromFile(const std::string& filename, std::vector<double>& values)
 
 	if (!file.is_open())
 	{
-		std::cerr << "Ошибка открытия файла!" << std::endl;
+		std::cerr << "File opening error!" << std::endl;
 		return 1;
 	}
 
